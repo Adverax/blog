@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://adverax.io/sitemap-index.xml

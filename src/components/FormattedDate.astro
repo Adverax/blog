@@ -1,0 +1,17 @@
+---
+// Дата через Intl (локаль из consts), а не хардкод формата.
+import { SITE_LOCALE } from '../consts';
+
+interface Props {
+  date: Date;
+}
+const { date } = Astro.props;
+
+const formatted = new Intl.DateTimeFormat(SITE_LOCALE, {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+}).format(date);
+---
+
+<time datetime={date.toISOString()}>{formatted}</time>

@@ -1,0 +1,51 @@
+---
+// Единый <head>: мета, canonical, Open Graph, Twitter, RSS.
+// OG здесь обязателен — блог публичный, ссылки шерятся (analysis §4.1).
+import { SITE_TITLE } from '../consts';
+import { canonical as canonicalUrl } from '../lib/url';
+
+interface Props {
+  title: string;
+  description: string;
+  // Абсолютный или относительный URL OG-картинки.
+  image?: string;
+  type?: 'website' | 'article';
+}
+
+const { title, description, image = '/og-default.png', type = 'website' } =
+  Astro.props;
+
+const canonical = canonicalUrl(Astro.url.pathname, Astro.site);
+const ogImage = new URL(image, Astro.site).href;
+const fullTitle = title === SITE_TITLE ? title : `${title} — ${SITE_TITLE}`;
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<meta name="generator" content={Astro.generator} />
+
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+
+<link
+  rel="alternate"
+  type="application/rss+xml"
+  title={SITE_TITLE}
+  href={new URL('rss.xml', Astro.site)}
+/>
+
+<!-- Open Graph -->
+<meta property="og:type" content={type} />
+<meta property="og:url" content={canonical} />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={ogImage} />
+<meta property="og:site_name" content={SITE_TITLE} />
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImage} />

@@ -1,0 +1,30 @@
+---
+// Giscus-комментарии (analysis §7.5). Инертны, пока GISCUS.enabled = false.
+// Включить в Фазе 6: репозиторий public, Discussions on, giscus app установлен,
+// repoId/categoryId взяты с giscus.app и проставлены в consts.ts.
+import { GISCUS } from '../consts';
+---
+
+{
+  GISCUS.enabled && (
+    <section class="mt-16" aria-label="Комментарии">
+      <script
+        src="https://giscus.app/client.js"
+        data-repo={GISCUS.repo}
+        data-repo-id={GISCUS.repoId}
+        data-category={GISCUS.category}
+        data-category-id={GISCUS.categoryId}
+        data-mapping="pathname"
+        data-strict="1"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="top"
+        data-theme="preferred_color_scheme"
+        data-lang="ru"
+        data-loading="lazy"
+        crossorigin="anonymous"
+        async
+      />
+    </section>
+  )
+}

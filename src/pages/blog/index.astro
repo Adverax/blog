@@ -1,0 +1,52 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FormattedDate from '../../components/FormattedDate.astro';
+import { getPublishedPosts } from '../../lib/posts';
+
+const posts = await getPublishedPosts();
+---
+
+<BaseLayout
+  title="Блог"
+  description="Статьи Adverax: обзоры оборудования, интеграции, сравнения протоколов и кейсы домашних энергосистем."
+>
+  <h1 class="text-3xl font-bold tracking-tight">Блог</h1>
+
+  {/* Pagefind: индекс генерируется postbuild-скриптом, работает в проде/preview. */}
+  <div id="search" class="mt-6"></div>
+  <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      // @ts-expect-error — глобал из подгружаемого скрипта Pagefind.
+      if (window.PagefindUI) {
+        // @ts-expect-error
+        new window.PagefindUI({ element: '#search', showSubResults: true });
+      }
+    });
+  </script>
+  <script src="/pagefind/pagefind-ui.js" is:inline></script>
+
+  {
+    posts.length === 0 ? (
+      <p class="mt-8 text-gray-500">Статей пока нет.</p>
+    ) : (
+      <ul class="mt-8 divide-y divide-gray-200">
+        {posts.map((post) => (
+          <li class="py-5">
+            <a href={`/blog/${post.id}`} class="group block">
+              <p class="text-xs text-gray-500">
+                <FormattedDate date={post.data.pubDate} />
+              </p>
+              <h2 class="mt-1 text-lg font-semibold text-gray-900 group-hover:text-brand-600">
+                {post.data.title}
+              </h2>
+              <p class="mt-1 text-sm text-gray-600 text-pretty">
+                {post.data.description}
+              </p>
+            </a>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+</BaseLayout>
