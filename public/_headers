@@ -1,0 +1,14 @@
+# Cloudflare Pages читает этот файл и применяет заголовки при раздаче.
+# CSP намеренно не задаётся здесь — добавить отдельно в Фазе 9
+# (Giscus + Pagefind + inline JSON-LD требуют аккуратной политики).
+
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  Permissions-Policy: geolocation=(), microphone=(), camera=()
+
+# Хешированные ассеты Astro — иммутабельны, кэшируем на год.
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
