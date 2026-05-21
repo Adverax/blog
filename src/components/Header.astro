@@ -1,11 +1,11 @@
 ---
-import { SITE_TITLE } from '../consts';
+import { SITE_TITLE, LAUNCH_ANNOUNCED } from '../consts';
 ---
 
 <header class="border-b border-gray-200 bg-white">
   <nav
     class="mx-auto flex max-w-3xl items-center justify-between px-4 py-4"
-    aria-label="Основная навигация"
+    aria-label="Main navigation"
   >
     <a
       href="/"
@@ -14,8 +14,8 @@ import { SITE_TITLE } from '../consts';
       {SITE_TITLE}
     </a>
     <div class="flex items-center gap-6 text-sm font-medium text-gray-600">
-      <a href="/blog" class="hover:text-brand-600">Блог</a>
-      <a href="/about" class="hover:text-brand-600">О проекте</a>
+      <a href="/blog" class="hover:text-brand-600">Blog</a>
+      {LAUNCH_ANNOUNCED && <a href="/about" class="hover:text-brand-600">About</a>}
     </div>
   </nav>
 </header>

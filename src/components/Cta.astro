@@ -1,22 +1,27 @@
 ---
 // Блок-воронка (analysis §7.3). Маркетплейса ещё нет — ведём в waitlist.
 // Когда появится каталог, заменить href на app.adverax.io / форму регистрации.
+// Видимость: только когда LAUNCH_ANNOUNCED = true (Фаза A — скрыто).
+import { LAUNCH_ANNOUNCED } from '../consts';
 ---
 
+{LAUNCH_ANNOUNCED && (
 <aside
   class="my-12 rounded-2xl border border-brand-100 bg-brand-50 px-6 py-8 text-center"
 >
   <h2 class="text-xl font-bold text-gray-900 text-balance">
-    Каталог проверенных интеграций — скоро
+    Verified integrations catalog — coming soon
   </h2>
   <p class="mx-auto mt-2 max-w-md text-sm text-gray-600">
-    Adverax собирает драйверы оборудования и провайдеры данных для домашних
-    энергосистем в одном месте. Оставьте почту — сообщим о запуске.
+    Adverax brings hardware drivers and data providers for home energy
+    systems together in one place. Drop your email — we'll let you know
+    when it launches.
   </p>
   <a
     href="/about"
     class="mt-4 inline-block rounded-lg bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white transition-colors duration-150 hover:bg-brand-700 focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:outline-none"
   >
-    Узнать больше
+    Learn more
   </a>
 </aside>
+)}

@@ -2,15 +2,22 @@
 
 export const SITE_TITLE = 'Adverax';
 export const SITE_DESCRIPTION =
-  'Блог Adverax: обзоры оборудования, интеграции домашних энергосистем, ' +
-  'сравнения протоколов и кейсы. Каталог проверенных программных компонентов — скоро.';
+  'Architecture, IoT integration, and field notes from building energy ' +
+  'software for places where blackouts are normal.';
 
 // Автор по умолчанию (если не указан во frontmatter статьи).
-export const DEFAULT_AUTHOR = 'Команда Adverax';
+export const DEFAULT_AUTHOR = 'Adverax Team';
 
 // Локаль для форматирования дат и атрибута lang.
-export const SITE_LOCALE = 'uk-UA';
-export const SITE_LANG = 'ru';
+export const SITE_LOCALE = 'en-US';
+export const SITE_LANG = 'en';
+
+// Фаза A: продукт публично не анонсирован. Пока false — скрываем
+// маркетинговый CTA (Cta.astro) и пункт «About» в навигации; страница
+// About вынесена в src/pages/_about.astro, чтобы Astro не генерировал
+// маршрут. Для запуска: поставить true И переименовать
+// src/pages/_about.astro обратно в about.astro.
+export const LAUNCH_ANNOUNCED = false;
 
 // Giscus включается в Фазе 6 после настройки на giscus.app.
 // До этого комментарии не рендерятся (репозиторий должен быть public,

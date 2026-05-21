@@ -1,4 +1,5 @@
 ---
+import { Image } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import FormattedDate from '../../components/FormattedDate.astro';
 import { getPublishedPosts } from '../../lib/posts';
@@ -7,10 +8,10 @@ const posts = await getPublishedPosts();
 ---
 
 <BaseLayout
-  title="Блог"
-  description="Статьи Adverax: обзоры оборудования, интеграции, сравнения протоколов и кейсы домашних энергосистем."
+  title="Blog"
+  description="Adverax articles: architecture, IoT integration, and field notes on home energy systems."
 >
-  <h1 class="text-3xl font-bold tracking-tight">Блог</h1>
+  <h1 class="text-3xl font-bold tracking-tight">Blog</h1>
 
   {/* Pagefind: индекс генерируется postbuild-скриптом, работает в проде/preview. */}
   <div id="search" class="mt-6"></div>
@@ -28,21 +29,33 @@ const posts = await getPublishedPosts();
 
   {
     posts.length === 0 ? (
-      <p class="mt-8 text-gray-500">Статей пока нет.</p>
+      <p class="mt-8 text-gray-500">No posts yet.</p>
     ) : (
       <ul class="mt-8 divide-y divide-gray-200">
         {posts.map((post) => (
           <li class="py-5">
-            <a href={`/blog/${post.id}`} class="group block">
-              <p class="text-xs text-gray-500">
-                <FormattedDate date={post.data.pubDate} />
-              </p>
-              <h2 class="mt-1 text-lg font-semibold text-gray-900 group-hover:text-brand-600">
-                {post.data.title}
-              </h2>
-              <p class="mt-1 text-sm text-gray-600 text-pretty">
-                {post.data.description}
-              </p>
+            <a href={`/blog/${post.id}`} class="group flex gap-4">
+              {post.data.heroImage && (
+                <Image
+                  src={post.data.heroImage}
+                  alt={post.data.heroAlt ?? ''}
+                  width={320}
+                  height={240}
+                  class="h-24 w-32 flex-shrink-0 rounded-md object-cover sm:h-28 sm:w-40"
+                  loading="lazy"
+                />
+              )}
+              <div class="min-w-0 flex-1">
+                <p class="text-xs text-gray-500">
+                  <FormattedDate date={post.data.pubDate} />
+                </p>
+                <h2 class="mt-1 text-lg font-semibold text-gray-900 group-hover:text-brand-600">
+                  {post.data.title}
+                </h2>
+                <p class="mt-1 line-clamp-2 text-sm text-gray-600 text-pretty">
+                  {post.data.description}
+                </p>
+              </div>
             </a>
           </li>
         ))}
