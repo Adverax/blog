@@ -5,7 +5,7 @@ pubDate: 2026-05-17
 tags: ["resilience", "energy", "infrastructure", "systems-thinking"]
 heroImage: ./images/you-dont-have-a-backup.webp
 heroAlt: "A small back-facing figure sits on the floor of an interior room examining a power strip into which power cords from a kettle, a router, a laptop, and a lamp all converge; a cobalt blue notebook lies on the floor beside the figure."
-draft: true
+draft: false
 ---
 
 My building is twenty-two floors of concrete with no gas line. The water in the tap, the heat in the radiators, the stove I cook dinner on, the lift, the light to read by — every one of them runs on electricity. For years I never had to know that. Power was simply there, the way the floor is there, and nobody thanks the floor for holding them up.

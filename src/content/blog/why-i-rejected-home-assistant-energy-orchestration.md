@@ -5,7 +5,7 @@ pubDate: 2026-05-18
 tags: ["home-assistant", "energy", "architecture", "automation", "iot"]
 heroImage: ./images/why-i-rejected-home-assistant-energy-orchestration.webp
 heroAlt: "A small back-facing figure stands before an interior wall holding a cobalt blue notebook, between a 3×3 grid of identical light switches on the left and a single round wall-mounted thermostat on the right."
-draft: true
+draft: false
 ---
 
 The power where I live goes out on a schedule — and, lately, often off it. My wife and I both work remotely, so when the grid drops, our income drops with it. A home battery here isn't a way to trim a few percent off a bill; on a bad day it's whether two people can do their jobs at all. (Why that's existential and not merely inconvenient is its own story — a separate post.)

@@ -5,7 +5,7 @@ pubDate: 2026-05-16
 tags: ["introduction", "energy", "engineering", "edge"]
 heroImage: ./images/dobro-pozhalovat.webp
 heroAlt: "A small back-facing figure seated at a writing desk, looking down at an open notebook with a small hand-drawn diagram; a pencil rests across the notebook and a cobalt blue ceramic mug with rising steam sits to its right."
-draft: true
+draft: false
 ---
 
 Some software gets to assume the lights stay on. The kind I work on doesn't.
