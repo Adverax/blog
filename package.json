@@ -9,12 +9,14 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build && pagefind --site dist",
-    "preview": "astro preview",
+    "preview": "npm run build && wrangler dev",
     "check": "astro check",
-    "deploy": "npm run build && npx wrangler pages deploy dist --project-name=blog",
-    "astro": "astro"
+    "deploy": "npm run build && wrangler deploy",
+    "astro": "astro",
+    "generate-types": "wrangler types"
   },
   "dependencies": {
+    "@astrojs/cloudflare": "^13.5.4",
     "@astrojs/mdx": "^5.0.6",
     "@astrojs/rss": "^4.0.18",
     "@astrojs/sitemap": "^3.7.2",
@@ -26,6 +28,10 @@
     "@astrojs/check": "^0.9.9",
     "@tailwindcss/typography": "^0.5.19",
     "pagefind": "^1.5.2",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "wrangler": "^4.93.1"
+  },
+  "overrides": {
+    "vite": "^7"
   }
 }
