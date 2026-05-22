@@ -4,6 +4,7 @@
 Markdown/MDX, деплой на Cloudflare Pages, домен `https://adverax.io` (блог под
 `/blog`). План: см. `doc/analysis/adverax-blog-plan.md` в репозитории `adverax/ems`.
 
+
 ## Стек
 
 - **Astro 6** — zero-JS по умолчанию.
