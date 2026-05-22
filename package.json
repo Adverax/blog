@@ -11,6 +11,7 @@
     "build": "astro build && pagefind --site dist",
     "preview": "astro preview",
     "check": "astro check",
+    "deploy": "npm run build && npx wrangler pages deploy dist --project-name=blog",
     "astro": "astro"
   },
   "dependencies": {
