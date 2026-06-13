@@ -22,7 +22,7 @@ Code generation was never the bottleneck. A senior engineer who knows the domain
 
 So I built a pipeline on the opposite premise. I call it **forge**. This post is about the idea; the rest of this paragraph is about how I'll prove it isn't vapor. forge took a single paragraph of product intent and produced a complete, tested, documented backend — domain model, architecture decisions, code, and a verification trail that ties every requirement to the test that proves it. I reviewed and approved decisions; I did not write the implementation. The result is a real repository you can read, audit, and run.
 
-- **The proof, as a 3-minute read:** [the Turnstile presentation](https://github.com/Adverax/turnstile/blob/main/docs/presentation.html) — twelve slides from one paragraph to working code.
+- **The proof, as a 3-minute read:** [the Turnstile presentation](/turnstile.html) — twelve slides from one paragraph to working code.
 - **The proof, for skeptics:** [the Turnstile repository](https://github.com/adverax/turnstile) — 9k lines of Go, 19 ADRs, 237 tests, the full `meta/` decision trail. Open `holdSeatsSQL` and decide for yourself.
 - **The proof, in motion:** [the pipeline run, recorded](https://youtu.be/dc2IVhJaZcw) — and, for anyone who suspects editing, [the full unedited session](https://youtu.be/LglW0bEu0N4).
 

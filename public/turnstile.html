@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Turnstile — built end-to-end by the forge pipeline</title>
+<style>
+  :root{
+    --bg:#0d1117; --bg2:#111722; --panel:#161d2b; --line:#243044;
+    --ink:#e6edf6; --dim:#9fb0c6; --faint:#6b7c93;
+    --accent:#f0b32a; --accent2:#4cc9b0; --bad:#ff6b6b; --good:#56d364;
+    --mono:'SFMono-Regular',ui-monospace,Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,Roboto,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:var(--sans)}
+  body{overflow:hidden}
+  .deck{height:100vh;width:100vw;position:relative}
+  .slide{
+    position:absolute;inset:0;display:none;flex-direction:column;justify-content:center;
+    padding:clamp(28px,5vw,90px);opacity:0;transition:opacity .35s ease;
+    background:radial-gradient(1200px 700px at 80% -10%,rgba(76,201,176,.06),transparent 60%),
+               radial-gradient(900px 600px at 0% 110%,rgba(240,179,42,.06),transparent 55%),
+               var(--bg);
+  }
+  .slide.active{display:flex;opacity:1}
+  .slide.cover{justify-content:center;align-items:flex-start}
+  h1{font-size:clamp(34px,6vw,72px);line-height:1.02;margin:0 0 18px;letter-spacing:-.02em}
+  h2{font-size:clamp(24px,3.4vw,40px);margin:0 0 6px;letter-spacing:-.01em}
+  h2 .num{color:var(--accent);font-variant-numeric:tabular-nums;margin-right:.5ch;font-size:.7em;vertical-align:.12em}
+  .kicker{text-transform:uppercase;letter-spacing:.22em;font-size:13px;color:var(--accent2);font-weight:700;margin-bottom:18px}
+  .lead{font-size:clamp(17px,2vw,23px);color:var(--dim);max-width:60ch;line-height:1.5}
+  p{line-height:1.55;color:var(--dim);font-size:clamp(15px,1.5vw,19px)}
+  strong{color:var(--ink);font-weight:650}
+  .accent{color:var(--accent)}
+  .teal{color:var(--accent2)}
+  ul{margin:.4em 0;padding-left:1.2em;line-height:1.6}
+  li{margin:.42em 0;color:var(--dim);font-size:clamp(15px,1.5vw,19px)}
+  li::marker{color:var(--accent2)}
+  .grid{display:grid;gap:18px;margin-top:8px}
+  .g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
+  .card h3{margin:0 0 6px;font-size:17px;color:var(--ink)}
+  .card p,.card li{font-size:14.5px;margin:.25em 0}
+  .chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+  .chip{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:8px 16px;font-size:14px;color:var(--dim)}
+  .chip b{color:var(--accent);font-variant-numeric:tabular-nums}
+  pre{background:#0a0e16;border:1px solid var(--line);border-left:3px solid var(--accent2);border-radius:10px;
+     padding:16px 18px;overflow:auto;font-family:var(--mono);font-size:clamp(11.5px,1.25vw,15px);line-height:1.5;color:#cdd9e8;margin:10px 0}
+  pre .kw{color:#79b8ff}pre .fn{color:#f0b32a}pre .st{color:#7ee787}pre .cm{color:#6b7c93;font-style:italic}pre .op{color:#ff9bb3}
+  table{border-collapse:collapse;width:100%;margin-top:6px;font-size:clamp(13px,1.35vw,16px)}
+  th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{color:var(--faint);font-weight:600;text-transform:uppercase;letter-spacing:.08em;font-size:12px}
+  td code,p code,li code{font-family:var(--mono);background:#0a0e16;border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:.88em;color:#cdd9e8}
+  .tag{display:inline-block;font-size:12px;font-weight:700;padding:2px 9px;border-radius:6px;letter-spacing:.03em}
+  .fixed{background:rgba(86,211,100,.14);color:var(--good);border:1px solid rgba(86,211,100,.3)}
+  .found{background:rgba(255,107,107,.12);color:var(--bad);border:1px solid rgba(255,107,107,.3)}
+  .hash{font-family:var(--mono);color:var(--accent);font-size:.9em}
+  .quote{border-left:3px solid var(--accent);padding:6px 0 6px 22px;font-size:clamp(18px,2.2vw,28px);
+     color:var(--ink);line-height:1.35;font-weight:500;max-width:24ch}
+  .two{display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center}
+  .footnote{position:absolute;left:clamp(28px,5vw,90px);bottom:26px;color:var(--faint);font-size:13px}
+  /* chrome */
+  .bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));z-index:30;transition:width .35s}
+  .hud{position:fixed;bottom:18px;right:22px;z-index:30;display:flex;align-items:center;gap:14px;color:var(--faint);font-size:13px}
+  .hud button{background:var(--panel);border:1px solid var(--line);color:var(--ink);width:38px;height:38px;border-radius:10px;font-size:18px;cursor:pointer;line-height:1}
+  .hud button:hover{border-color:var(--accent2);color:var(--accent2)}
+  .count{font-variant-numeric:tabular-nums;min-width:54px;text-align:center}
+  .brand{position:fixed;top:18px;left:22px;z-index:30;font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--faint)}
+  .brand b{color:var(--accent2)}
+  @media(max-width:760px){.g2,.g3,.two{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="bar" id="bar"></div>
+<div class="brand">TURNSTILE · built by <b>forge</b></div>
+
+<div class="deck" id="deck">
+
+  <!-- 1 -->
+  <section class="slide cover">
+    <div class="kicker">A demonstration of agent-driven software delivery</div>
+    <h1>Turnstile</h1>
+    <p class="lead">A backend ticket-sales service for small events — <strong>designed, decided,
+    coded and tested end-to-end by the <span class="teal">forge</span> pipeline</strong>, from a
+    single paragraph of product idea. A human only reviewed and approved decisions.</p>
+    <div class="chips">
+      <span class="chip"><b>9,156</b> lines of Go</span>
+      <span class="chip"><b>19</b> ADRs</span>
+      <span class="chip"><b>12</b> kanban cards</span>
+      <span class="chip"><b>237</b> test functions</span>
+      <span class="chip"><b>3</b> bounded contexts</span>
+      <span class="chip">~<b>4h</b> agent session</span>
+    </div>
+    <div class="footnote">Use ← / → (or Space) to navigate · 12 slides</div>
+  </section>
+
+  <!-- 2 -->
+  <section class="slide">
+    <div class="kicker">Where it started</div>
+    <h2><span class="num">01</span> One paragraph of intent</h2>
+    <div class="two">
+      <div>
+        <p>The whole system was grown from a plain-language brief — no schemas, no API spec,
+        no diagrams. forge extracted the domain, surfaced the decisions, and built the code.</p>
+        <ul>
+          <li>Buyer reserves <strong>1–4 seats</strong>; a hold lasts <strong>10 minutes</strong>.</li>
+          <li>Payment is async via an external provider; the callback can be
+              <strong>delayed up to 15 min</strong> and <strong>duplicated</strong>.</li>
+          <li>Cancel &amp; refund up to <strong>48h</strong> before the event.</li>
+          <li>A buyer may never hold more than <strong>4 tickets</strong> per event.</li>
+          <li><strong>P95 &lt; 200 ms</strong> at 100 concurrent reservations.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="quote">"Never, under any circumstances, sell or hold more seats than the
+        hall's capacity — this is the most important requirement."</div>
+        <p style="margin-top:18px;color:var(--faint)">— <code>docs/idea.md</code>, the only human-authored spec</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 -->
+  <section class="slide">
+    <div class="kicker">The forge pipeline</div>
+    <h2><span class="num">02</span> Idea → model → decisions → code</h2>
+    <p>Every stage left a durable, inspectable artifact under <code>meta/</code>. The trail
+    <em>is</em> part of the deliverable — you can audit how each line of code traces back to intent.</p>
+    <table>
+      <tr><th>Stage</th><th>What forge produced</th><th>Artifact</th></tr>
+      <tr><td>Brainstorm → domain</td><td>vision, user stories, formal domain model (events, commands, aggregates, policies, glossary)</td><td><code>inputs/</code> · <code>domain/</code></td></tr>
+      <tr><td>Capabilities &amp; contexts</td><td>business capabilities, bounded-context map</td><td><code>domain/</code></td></tr>
+      <tr><td>Decisions</td><td><strong>19 ADRs</strong> in Nygard format, each with rejected alternatives</td><td><code>decisions/adr/</code></td></tr>
+      <tr><td>Synthesis</td><td>C4 diagrams + a requirement→component→test <strong>trace matrix</strong></td><td><code>c4/</code> · <code>trace.yml</code></td></tr>
+      <tr><td>Kanban</td><td><strong>12 cards</strong> across waves, each built in its own git worktree, with review cycles</td><td><code>kanban/</code></td></tr>
+      <tr><td>Docs</td><td>layered "how it works" + OpenAPI contract</td><td><code>docs/</code></td></tr>
+    </table>
+  </section>
+
+  <!-- 4 -->
+  <section class="slide">
+    <div class="kicker">Architecture</div>
+    <h2><span class="num">03</span> A modular monolith, consistent down to the code</h2>
+    <p>One Go deployable; contexts isolated by package <em>and</em> by Postgres schema; cross-context
+    communication only through a transactional outbox. Each choice is pinned to an ADR — and the code follows it.</p>
+    <div class="grid g3">
+      <div class="card"><h3 class="teal">CTX-001 · Sales</h3><p>Events, reservations, the capacity guard, payment intake, hold expiry, reopen-on-release.</p></div>
+      <div class="card"><h3 class="teal">CTX-002 · Fulfilment</h3><p>Orders, tickets, the decoupled ticket-email worker.</p></div>
+      <div class="card"><h3 class="teal">CTX-003 · Refund</h3><p>Cancellation, refund requests with retry &amp; escalation.</p></div>
+      <div class="card"><h3 class="accent">Platform</h3><p>Outbox relay, scheduler sweep, append-only audit log, injectable UTC clock.</p></div>
+      <div class="card"><h3 class="accent">Patterns</h3><p>Anti-corruption layers to providers · dedicated idempotency store · ports &amp; adapters.</p></div>
+      <div class="card"><h3 class="accent">Discipline</h3><p>Schema-per-context (ADR-0003) · async edges via outbox (ADR-0004) · single clock (ADR-0019).</p></div>
+    </div>
+  </section>
+
+  <!-- 5 -->
+  <section class="slide">
+    <div class="kicker">The crown jewel</div>
+    <h2><span class="num">04</span> Oversell made structurally impossible</h2>
+    <div class="two">
+      <div>
+        <p>The single most important requirement is enforced by <strong>one guarded atomic UPDATE</strong> —
+        the only write-path that can increment <code>held_seats</code>. No application-level read-modify-write,
+        no retry loop.</p>
+        <ul>
+          <li>The guard and the count live in <strong>one indivisible statement</strong>.</li>
+          <li>Postgres' row write-lock <strong>serializes</strong> all concurrent reservers of an event.</li>
+          <li>The payment-provider call is deliberately <strong>outside</strong> the critical section.</li>
+          <li>Documented TOCTOU fix for the per-buyer cap on the same lock.</li>
+        </ul>
+      </div>
+      <div>
+<pre><span class="kw">UPDATE</span> inventory.events
+<span class="kw">SET</span> held_seats = held_seats + $3
+<span class="kw">WHERE</span> id = $1
+  <span class="kw">AND</span> status = <span class="st">'published'</span>
+  <span class="kw">AND</span> sales_open_at &lt;= $2
+  <span class="kw">AND</span> sales_close_at &gt; $2
+  <span class="kw">AND</span> held_seats + sold_seats + $3 &lt;= capacity
+<span class="cm">-- 0 rows affected ⇒ rejected. Oversell</span>
+<span class="cm">-- is impossible by construction (NFR-002).</span></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 -->
+  <section class="slide">
+    <div class="kicker">Tests are not theatre</div>
+    <h2><span class="num">05</span> 237 test functions that actually bite</h2>
+    <div class="grid g2">
+      <div class="card"><h3>Concurrency, proven</h3><p>200 buyers race for 100 seats → <strong>exactly 100</strong> succeed,
+        <code>held_seats == 100</code>, and the reservation rows are reconciled against the successes — no phantom inserts.</p></div>
+      <div class="card"><h3>Real Postgres</h3><p>The never-oversell &amp; per-buyer proofs run behind an <code>integration</code> build tag
+        against a live database — properties that cannot be faked against a mock.</p></div>
+      <div class="card"><h3>Failure injection</h3><p>The refund path is tested through transient failures, persistent failures,
+        lease re-claims and escalation — not just the happy case.</p></div>
+      <div class="card"><h3>End-to-end</h3><p>A full <strong>reserve → pay → confirm → order</strong> flow, plus the late-callback
+        auto-refund and the cancellation→refund→release chain.</p></div>
+    </div>
+  </section>
+
+  <!-- 7 -->
+  <section class="slide">
+    <div class="kicker">The planted contradiction</div>
+    <h2><span class="num">06</span> 10 minutes vs 15 minutes — caught, not glossed</h2>
+    <div class="two">
+      <div>
+        <p>The brief hides a trap: the <strong>10-minute hold</strong> is shorter than the maximum
+        <strong>15-minute callback delay</strong>. A payment can confirm <em>after</em> the seats were released.</p>
+        <p>forge didn't silently pick one. It <strong>surfaced the tension as a decision</strong>, then resolved it
+        in code: a late callback re-checks availability and either fulfils or auto-refunds — the buyer is never
+        charged for a ticket that can't be delivered.</p>
+      </div>
+      <div>
+        <div class="card"><h3 class="accent">DEC-001 → resolved</h3>
+          <p>"The 10-minute hold window is shorter than the maximum 15-minute callback delay…"</p>
+          <p style="margin-top:10px;color:var(--faint)">Resolved via the late-callback reconciliation policy
+          (ADR-0007 auto-refund) and implemented in a dedicated card with concurrency tests.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8 -->
+  <section class="slide">
+    <div class="kicker">Independent review</div>
+    <h2><span class="num">07</span> The verdict</h2>
+    <div class="two">
+      <div>
+        <div class="quote">"Strong-senior work, and in places above. The architecture is consistent
+        from decision to code."</div>
+        <p style="margin-top:20px">— an independent audit from a separate source</p>
+      </div>
+      <div>
+        <ul>
+          <li>"Every choice is pinned in an ADR with alternatives, and the code really follows them."</li>
+          <li>"<code>holdSeatsSQL</code> with its transaction-order &amp; TOCTOU note is an exemplary fragment."</li>
+          <li>"Tests aren't props: the concurrency test is strict, with failure injection and e2e flows."</li>
+          <li>The review trail itself is evidence: cycle 1 caught <em>"migration runner not transactional"</em> →
+              fixed in cycle 2.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9 -->
+  <section class="slide">
+    <div class="kicker">The honest part</div>
+    <h2><span class="num">08</span> …and where the AI drifted inside its own pipeline</h2>
+    <p>The audit's two most serious findings weren't sloppiness in the code — they were
+    <strong>organic drift between model and code</strong>: exactly the failure class the framework exists to catch.</p>
+    <div class="grid g2">
+      <div class="card">
+        <span class="tag found">FOUND</span>
+        <h3 style="margin-top:10px">① INV-003 implemented short of its ADR</h3>
+        <p>ADR-0015 says the 4-ticket cap counts <strong>held + confirmed</strong>. The code counted only
+        <code>held</code> — a card was closed with a <em>"finish later"</em> comment, yet the trace marked the
+        requirement <strong>covered</strong>. A buyer with 4 paid tickets could hold 4 more.</p>
+      </div>
+      <div class="card">
+        <span class="tag found">FOUND</span>
+        <h3 style="margin-top:10px">② The trace matrix went stale</h3>
+        <p><strong>7 of 53</strong> referenced tests no longer existed under those names (renamed in the
+        email-worker refactor; coverage existed, links were dead), and <strong>2 of 26</strong> code-globs
+        pointed at directories that were never used.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10 -->
+  <section class="slide">
+    <div class="kicker">Found → fixed</div>
+    <h2><span class="num">09</span> Every finding, resolved — on the record</h2>
+    <table>
+      <tr><th>Audit finding</th><th>Resolution</th><th>Status</th><th>Commit</th></tr>
+      <tr><td>INV-003 counts only held seats</td><td>Count <code>held + paid</code>; honest tests that fail on the old query</td><td><span class="tag fixed">FIXED</span></td><td><span class="hash">e567a3e</span></td></tr>
+      <tr><td>Trace matrix stale (7 names, 2 globs)</td><td>Re-synced to real test names &amp; <code>inventory/</code>·<code>refunds/</code></td><td><span class="tag fixed">FIXED</span></td><td><span class="hash">a3f62ec</span></td></tr>
+      <tr><td>Validators let both drifts through</td><td>Closed two blind spots: self-referencing test check &amp; dead glob matcher; added a spec↔test↔code review lens</td><td><span class="tag fixed">FIXED</span></td><td><span class="hash">forge a92b1f4 · 2ab938e</span></td></tr>
+      <tr><td>No CI to fail the build on drift</td><td>GitHub Actions drift-gate workflow</td><td><span class="tag fixed">FIXED</span></td><td><span class="hash">18879dd</span></td></tr>
+      <tr><td>One-line README, no one-command run</td><td>Full README + generated <code>Makefile</code> &amp; <code>docker-compose</code> (<code>make run</code>)</td><td><span class="tag fixed">FIXED</span></td><td><span class="hash">81cc903 · e362f3c</span></td></tr>
+      <tr><td>Auth is a header stub; webhook unsigned</td><td>Explicit "demonstration · no security hardening" disclaimer in README</td><td><span class="tag fixed">NOTED</span></td><td><span class="hash">81cc903</span></td></tr>
+    </table>
+  </section>
+
+  <!-- 11 -->
+  <section class="slide">
+    <div class="kicker">The strategic takeaway</div>
+    <h2><span class="num">10</span> The drift is the point</h2>
+    <div class="two">
+      <div>
+        <p>Findings ①–② aren't a defect to quietly sweep away — they're the most convincing content
+        the project could have produced: <strong>real drift, caught and fixed by the very framework
+        built to catch it.</strong></p>
+        <p>Two genuine "where AI errs even inside the pipeline" cases beat any hypothetical:
+        <em>"closed a card with a 'do it later' comment and marked the requirement covered"</em> and
+        <em>"didn't re-sync the trace after a refactor."</em></p>
+      </div>
+      <div>
+        <div class="card"><h3 class="teal">forge now catches this class</h3>
+          <ul>
+            <li><strong>Aspirational-green</strong> — a review lens checks a test's body really exercises its AC.</li>
+            <li><strong>Deferral capture</strong> — a "later card" comment becomes a tracked backlog item.</li>
+            <li><strong>Dead trace links</strong> — named tests must exist in code, not in the model that names them.</li>
+            <li><strong>Glob drift</strong> — a stale code path is flagged against its resolving siblings.</li>
+            <li><strong>CI red on drift</strong> → resync → green.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 12 -->
+  <section class="slide cover">
+    <div class="kicker">Read the code — and the trail</div>
+    <h1>An artifact, not a black box.</h1>
+    <p class="lead">Turnstile is a teaching example: a real backend whose every decision, requirement,
+    test and even its <em>mistakes</em> are inspectable end to end. That transparency — including the
+    drift it caught in itself — is the whole point.</p>
+    <div class="chips">
+      <span class="chip">📄 <code>docs/idea.md</code> — the brief</span>
+      <span class="chip">🧭 <code>meta/architecture/</code> — model &amp; ADRs</span>
+      <span class="chip">🗺 <code>meta/architecture/trace.yml</code> — traceability</span>
+      <span class="chip">📓 <code>meta/kanban/retro.md</code> — the build retro</span>
+    </div>
+  </section>
+
+</div>
+
+<div class="hud">
+  <button id="prev" aria-label="Previous">‹</button>
+  <span class="count"><span id="cur">1</span> / <span id="tot">12</span></span>
+  <button id="next" aria-label="Next">›</button>
+</div>
+
+<script>
+  const slides=[...document.querySelectorAll('.slide')];
+  const bar=document.getElementById('bar'),cur=document.getElementById('cur');
+  document.getElementById('tot').textContent=slides.length;
+  let i=0;
+  function show(n){
+    i=Math.max(0,Math.min(slides.length-1,n));
+    slides.forEach((s,k)=>s.classList.toggle('active',k===i));
+    bar.style.width=((i+1)/slides.length*100)+'%';
+    cur.textContent=i+1;
+    location.hash=i+1;
+  }
+  function next(){show(i+1)} function prev(){show(i-1)}
+  document.getElementById('next').onclick=next;
+  document.getElementById('prev').onclick=prev;
+  addEventListener('keydown',e=>{
+    if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();next();}
+    else if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();prev();}
+    else if(e.key==='Home')show(0); else if(e.key==='End')show(slides.length-1);
+  });
+  // swipe
+  let x0=null;
+  addEventListener('touchstart',e=>x0=e.touches[0].clientX,{passive:true});
+  addEventListener('touchend',e=>{if(x0===null)return;const dx=e.changedTouches[0].clientX-x0;
+    if(Math.abs(dx)>50){dx<0?next():prev();}x0=null;});
+  show((parseInt(location.hash.slice(1))||1)-1);
+</script>
+</body>
+</html>
