@@ -1,5 +1,5 @@
 ---
-import { SITE_TITLE, LAUNCH_ANNOUNCED } from '../consts';
+import { SITE_TITLE } from '../consts';
 ---
 
 <header class="border-b border-gray-200 bg-white">
@@ -15,7 +15,7 @@ import { SITE_TITLE, LAUNCH_ANNOUNCED } from '../consts';
     </a>
     <div class="flex items-center gap-6 text-sm font-medium text-gray-600">
       <a href="/blog" class="hover:text-brand-600">Blog</a>
-      {LAUNCH_ANNOUNCED && <a href="/about" class="hover:text-brand-600">About</a>}
+      <a href="/about" class="hover:text-brand-600">About</a>
     </div>
   </nav>
 </header>

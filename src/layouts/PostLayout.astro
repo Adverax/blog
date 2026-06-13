@@ -2,9 +2,10 @@
 import { Image } from 'astro:assets';
 import BaseLayout from './BaseLayout.astro';
 import FormattedDate from '../components/FormattedDate.astro';
+import AuthorBio from '../components/AuthorBio.astro';
 import Cta from '../components/Cta.astro';
 import Comments from '../components/Comments.astro';
-import { DEFAULT_AUTHOR, SITE_TITLE } from '../consts';
+import { DEFAULT_AUTHOR, SITE_TITLE, AUTHOR_BIO } from '../consts';
 import { canonical } from '../lib/url';
 import type { Post } from '../lib/posts';
 
@@ -24,8 +25,13 @@ const jsonLd = {
   description,
   datePublished: pubDate.toISOString(),
   dateModified: (updatedDate ?? pubDate).toISOString(),
-  author: { '@type': 'Organization', name: author },
-  publisher: { '@type': 'Organization', name: SITE_TITLE },
+  author: {
+    '@type': 'Person',
+    name: author,
+    jobTitle: AUTHOR_BIO.jobTitle,
+    sameAs: AUTHOR_BIO.links.map((l) => l.href),
+  },
+  publisher: { '@type': 'Person', name: SITE_TITLE },
   mainEntityOfPage: canonical(Astro.url.pathname, Astro.site),
 };
 ---
@@ -81,6 +87,7 @@ const jsonLd = {
       <slot />
     </div>
 
+    <AuthorBio />
     <Cta />
     <Comments />
   </article>

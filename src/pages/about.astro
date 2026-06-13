@@ -1,0 +1,111 @@
+---
+// Личная hire-me страница (центр позиционирования под founding-CTO офер).
+// Источник профиля и ссылок — AUTHOR_BIO в consts.ts (единый источник правды,
+// тот же, что у подписи под постами). Person JSON-LD для Google: имя,
+// должность, sameAs и явный seeks (искомая роль).
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { AUTHOR_BIO, SITE_DESCRIPTION } from '../consts';
+
+// Контакт для inbound: меняется здесь.
+const EMAIL = 'adverax314@gmail.com';
+
+const personJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: AUTHOR_BIO.name,
+  jobTitle: AUTHOR_BIO.jobTitle,
+  email: `mailto:${EMAIL}`,
+  address: AUTHOR_BIO.location,
+  sameAs: AUTHOR_BIO.links.map((l) => l.href),
+  seeks: {
+    '@type': 'Demand',
+    name: 'Founding CTO role at an early-stage team',
+  },
+};
+---
+
+<BaseLayout title="About" description={SITE_DESCRIPTION}>
+  <script
+    type="application/ld+json"
+    set:html={JSON.stringify(personJsonLd)}
+    slot="head"
+    is:inline
+  />
+
+  <article class="prose prose-gray max-w-none prose-a:text-brand-600">
+    <h1>{AUTHOR_BIO.name}</h1>
+    <p class="lead text-lg text-gray-700">
+      {AUTHOR_BIO.jobTitle} · {AUTHOR_BIO.location}
+    </p>
+
+    <p>
+      I build systems meant to hold where they're <em>not allowed to fail</em>.
+      Fifteen-plus years in high-load distributed systems — written mostly in
+      Go, across healthcare, telecom, and crypto, where an outage isn't a bad
+      day but a real cost to real people. That constraint shapes how I think
+      about architecture, trade-offs, and what "done" actually means.
+    </p>
+
+    <h2>How I think</h2>
+    <p>
+      This blog is the long version: field notes one layer up from any single
+      product — on resilience, on the way software itself gets built, on the
+      decisions that don't show up in a stack but decide whether a system
+      survives contact with reality. If you want to know how I reason before we
+      ever talk, read a few posts. That's the point of them.
+    </p>
+    <ul>
+      <li>
+        <strong>Resilience by design, not by heroics.</strong> Systems that
+        degrade predictably and recover on their own beat ones that need a human
+        awake at 3am.
+      </li>
+      <li>
+        <strong>Architecture is about what you can change later.</strong> I
+        optimise for the decisions a team will need to reverse, not for elegance
+        on day one.
+      </li>
+      <li>
+        <strong>Ship, observe, correct.</strong> Judgment under ambiguity beats
+        a perfect plan that arrives too late.
+      </li>
+    </ul>
+
+    <h2>What I'm looking for</h2>
+    <p>
+      I'm looking for a <strong>founding CTO</strong> role with an early-stage
+      team — founders who need someone to own the technical bet end to end:
+      architecture, the first builds, the first hires, and the standards the
+      product is held to. If you're building something that isn't allowed to
+      fail and you think this way too, I'd like to hear from you.
+    </p>
+
+    <div class="not-prose mt-8 flex flex-wrap gap-3">
+      <a
+        href={`mailto:${EMAIL}`}
+        class="rounded-lg bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white transition-colors duration-150 hover:bg-brand-700 focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:outline-none"
+      >
+        Work with me
+      </a>
+      {
+        AUTHOR_BIO.links.map((link) => (
+          <a
+            href={link.href}
+            class="rounded-lg border border-gray-300 px-5 py-2.5 text-sm font-semibold text-gray-700 transition-colors duration-150 hover:border-brand-600 hover:text-brand-600"
+            target="_blank"
+            rel="me noopener"
+          >
+            {link.label}
+          </a>
+        ))
+      }
+      <a
+        href="/cv.pdf"
+        class="rounded-lg border border-gray-300 px-5 py-2.5 text-sm font-semibold text-gray-700 transition-colors duration-150 hover:border-brand-600 hover:text-brand-600"
+        rel="noopener"
+      >
+        CV (PDF)
+      </a>
+    </div>
+  </article>
+</BaseLayout>

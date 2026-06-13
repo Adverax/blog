@@ -1,0 +1,28 @@
+---
+// Личная подпись-биография автора под каждой статьёй. Источник текста и
+// ссылок — AUTHOR_BIO в consts.ts (единый источник правды для всех постов).
+// Не гейтится LAUNCH_ANNOUNCED: это «founding CTO» inbound-сигнал, который
+// должен быть виден уже в фазе A (в отличие от продуктового Cta).
+import { AUTHOR_BIO } from '../consts';
+---
+
+<footer class="mt-12 border-t border-gray-200 pt-6 text-sm text-gray-600">
+  <p>
+    I'm <strong class="font-semibold text-gray-900">{AUTHOR_BIO.name}</strong> — {AUTHOR_BIO.bio}{' '}
+    {
+      AUTHOR_BIO.links.map((link, i) => (
+        <>
+          {i > 0 && <span aria-hidden="true"> · </span>}
+          <a
+            href={link.href}
+            class="text-brand-600 hover:underline"
+            target="_blank"
+            rel="me noopener"
+          >
+            {link.label}
+          </a>
+        </>
+      ))
+    }
+  </p>
+</footer>
