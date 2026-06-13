@@ -2,8 +2,9 @@
 
 export const SITE_TITLE = 'Adverax';
 export const SITE_DESCRIPTION =
-  'Architecture, IoT integration, and field notes from building energy ' +
-  'software for places where blackouts are normal.';
+  'Systems built to hold where they are not allowed to fail — from home ' +
+  'energy to the way software itself gets built. Field notes, one layer ' +
+  'up from any product.';
 
 // Автор по умолчанию (если не указан во frontmatter статьи).
 export const DEFAULT_AUTHOR = 'Adverax Team';

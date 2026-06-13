@@ -11,11 +11,11 @@ const posts = (await getPublishedPosts()).slice(0, 5);
   <section class="grid items-center gap-10 py-10 md:grid-cols-[1.2fr_1fr] md:py-14">
     <div class="text-center md:text-left">
       <h1 class="text-balance text-4xl font-bold tracking-tight sm:text-5xl">
-        Energy software for the unstable grid.
+        Systems built to hold where they're not allowed to fail.
       </h1>
       <p class="mx-auto mt-4 max-w-xl text-pretty text-lg text-gray-600 md:mx-0">
-        Architecture decisions, integration war stories, and field notes from
-        building IoT that keeps homes running when the grid doesn't.
+        From home energy to the way software itself gets built. Field notes,
+        one layer up from any product.
       </p>
       <div class="mt-6 flex justify-center gap-3 md:justify-start">
         <a
@@ -28,46 +28,37 @@ const posts = (await getPublishedPosts()).slice(0, 5);
     </div>
 
     <!--
-      Decorative hero: a power line between two poles above a horizon of
-      houses, broken in the middle — the unstable-grid motif. Inline SVG:
-      no extra request, tunable via Tailwind utility classes.
+      Decorative hero: a load carried at the centre of a taut span between two
+      anchors — the span dips but holds, unbroken end to end ("meant to hold").
+      Below it, a quiet stack of layers this work sits one layer above ("one
+      layer up from any product"). Inline SVG: no extra request, tunable via
+      Tailwind utility classes.
     -->
     <div class="order-first md:order-last">
       <svg
         viewBox="0 0 360 240"
         role="img"
-        aria-label="Illustration: a power line broken between two poles above a horizon of houses."
+        aria-label="Illustration: a load held at the centre of a taut, unbroken span between two anchors, standing one layer above a stack."
         class="mx-auto h-auto w-full max-w-md"
       >
-        <!-- soft sky wash -->
-        <rect x="0" y="0" width="360" height="210" class="fill-brand-50" />
+        <!-- the product layers below: the stack this work sits one layer above -->
+        <rect x="60" y="214" width="240" height="9" rx="2" class="fill-brand-100" />
+        <rect x="80" y="205" width="200" height="9" rx="2" class="fill-brand-200" />
+        <rect x="100" y="196" width="160" height="9" rx="2" class="fill-brand-300" />
 
-        <!-- sun -->
-        <circle cx="298" cy="58" r="36" class="fill-amber-200" opacity="0.45" />
-        <circle cx="298" cy="58" r="24" class="fill-amber-300" opacity="0.85" />
+        <!-- baseline the anchors stand on -->
+        <line x1="40" y1="190" x2="320" y2="190" class="stroke-gray-300" stroke-width="1.5" />
 
-        <!-- ground line -->
-        <line x1="0" y1="210" x2="360" y2="210" class="stroke-gray-300" stroke-width="1.5" />
+        <!-- two anchors -->
+        <line x1="85" y1="190" x2="85" y2="88" class="stroke-gray-600" stroke-width="3" stroke-linecap="round" />
+        <line x1="275" y1="190" x2="275" y2="88" class="stroke-gray-600" stroke-width="3" stroke-linecap="round" />
 
-        <!-- houses -->
-        <polygon points="36,210 36,188 70,160 104,188 104,210" class="fill-gray-700" />
-        <polygon points="138,210 138,178 180,148 222,178 222,210" class="fill-gray-800" />
-        <!-- a solar panel on the south slope of the middle house -->
-        <polygon points="183,164 215,178 213,184 181,170" class="fill-brand-600" />
-        <polygon points="248,210 248,192 278,166 308,192 308,210" class="fill-gray-700" />
+        <!-- the span: dips under load but holds — unbroken end to end -->
+        <path d="M 85 92 Q 180 172 275 92" fill="none" class="stroke-brand-600" stroke-width="3" stroke-linecap="round" />
 
-        <!-- power poles -->
-        <line x1="85" y1="210" x2="85" y2="92" class="stroke-gray-600" stroke-width="2" />
-        <line x1="76" y1="98" x2="94" y2="98" class="stroke-gray-600" stroke-width="2" />
-        <line x1="275" y1="210" x2="275" y2="92" class="stroke-gray-600" stroke-width="2" />
-        <line x1="266" y1="98" x2="284" y2="98" class="stroke-gray-600" stroke-width="2" />
-
-        <!-- cable, broken mid-air -->
-        <path d="M 85 100 Q 130 140 168 130" fill="none" class="stroke-gray-600" stroke-width="2" stroke-linecap="round" />
-        <path d="M 192 130 Q 230 140 275 100" fill="none" class="stroke-gray-600" stroke-width="2" stroke-linecap="round" />
-
-        <!-- spark at the break -->
-        <path d="M 184 116 L 178 128 L 186 128 L 180 144" fill="none" class="stroke-amber-500" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" />
+        <!-- the load carried at the centre of the span -->
+        <line x1="180" y1="132" x2="180" y2="140" class="stroke-gray-600" stroke-width="2" />
+        <rect x="168" y="140" width="24" height="18" rx="3" class="fill-gray-800" />
       </svg>
     </div>
   </section>
