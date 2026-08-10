@@ -43,7 +43,7 @@ tags: ["обзор", "modbus"]     # опционально
 heroImage: ./hero.jpg         # опционально (относительный путь, оптимизируется)
 heroAlt: "Описание картинки"  # опционально
 draft: false                  # true — скрыто в проде, sitemap, RSS
----
+---Ë
 ```
 
 4. URL статьи: `https://adverax.io/blog/<slug>`.
