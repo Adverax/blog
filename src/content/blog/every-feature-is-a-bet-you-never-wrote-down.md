@@ -5,7 +5,7 @@ pubDate: 2026-08-10
 tags: ["engineering-practice", "product-thinking", "founder", "decision-making", "hypothesis-driven-development"]
 heroImage: ./images/every-feature-is-a-bet-you-never-wrote-down.webp
 heroAlt: "A dotted trail zigzags erratically across the floor but drifts steadily toward a single dial on the wall, while a small figure crouches to follow its path, a cobalt notebook beside them."
-draft: true
+draft: false
 ---
 
 # Hypothesis-Driven Development: Be Wrong Locally, Move Right Globally
